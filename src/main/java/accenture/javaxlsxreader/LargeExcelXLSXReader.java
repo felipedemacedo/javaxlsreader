@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import com.monitorjbl.xlsx.StreamingReader;
+
 
 /**
  * Based on https://github.com/monitorjbl/excel-streaming-reader
@@ -22,6 +22,8 @@ public class LargeExcelXLSXReader {
 	private File inputFile = null;
 	private Workbook workbook = null;
 	private InputStream is = null; // InputStream or File for XLSX file (required)
+	
+	//private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(LargeExcelXLSXReader.class.getName());
 	
 	/**
 	 * Construtor padrão
@@ -64,23 +66,38 @@ public class LargeExcelXLSXReader {
 		this.load();
 	}
 	
-	public void iterate() {
+	/**
+	 * Itera sobre todas as linhas do arquivo excel.
+	 * 
+	 * @param debugMode [0=no print] / [1:basic print] / [2:full print] 
+	 */
+	public void iterate(int debugMode) {
 		
 		if(getWorkbook() == null)
 			return;
 		
-		System.out.println("Iniciando leitura do arquivo ...");
+		if(debugMode!=0) {
+			System.out.println("Iniciando leitura do arquivo ...");			
+		}
+		    	
+		int linha = 1;
 		
-    	int linha = 1;
-    	
     	for (Sheet sheet : getWorkbook()){
-		  //System.out.println(sheet.getSheetName());
-		  for (Row r : sheet) {
-			System.out.print("linha: " + (linha++) + " [");
-		    for (Cell c : r) {
-		      System.out.print(c.getStringCellValue().replace("Cell ", "").replace(" "+c.getColumnIndex(), "") + ";");
-		    }
-		    System.out.println("]");
+    		if(debugMode==2) {
+    			System.out.println(sheet.getSheetName());
+    		}
+    		for (Row r : sheet) {
+    			if(debugMode==2) {
+    				System.out.print("linha: " + (linha++) + " [");    				
+    			}
+    			for (Cell c : r) {
+    				if(debugMode==2) {
+    					System.out.print(c.getStringCellValue().replace("Cell ", "").replace(" "+c.getColumnIndex(), "") + ";");
+    				}
+    			}
+    			if(debugMode==2) {
+    				System.out.println("]");
+    			}
 		  }
 		}
     	
