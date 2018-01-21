@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -69,39 +72,61 @@ public class LargeExcelXLSXReader {
 	/**
 	 * Itera sobre todas as linhas do arquivo excel.
 	 * 
-	 * @param debugMode [0=no print] / [1:basic print] / [2:full print] 
+	 * @param debugMode
+	 * @return
 	 */
-	public void iterate(int debugMode) {
+	public String[] iterate(int debugMode) {
 		
 		if(getWorkbook() == null)
-			return;
+			return null;
+		    	
+		int linha = 1;
+		int planilha = 1;	//capturar apenas a primeira planilha
+		String[] rows = null;
 		
 		if(debugMode!=0) {
 			System.out.println("Iniciando leitura do arquivo ...");			
 		}
-		    	
-		int linha = 1;
 		
     	for (Sheet sheet : getWorkbook()){
+   			if(planilha>1) {
+				continue;
+			}
+			
+			planilha++;
+    		
     		if(debugMode==2) {
     			System.out.println(sheet.getSheetName());
-    		}
+    		}    		
+    		
+    		rows = new String[sheet.getLastRowNum()+1];
+    		
     		for (Row r : sheet) {
+ 
     			if(debugMode==2) {
     				System.out.print("linha: " + (linha++) + " [");    				
     			}
+    			
+    			String montaLinha = "";
+    			
     			for (Cell c : r) {
     				if(debugMode==2) {
-    					System.out.print(c.getStringCellValue().replace("Cell ", "").replace(" "+c.getColumnIndex(), "") + ";");
+    					System.out.print(c.getStringCellValue());
     				}
+    				
+    				montaLinha += c.getStringCellValue();
     			}
+    			
+    			rows[r.getRowNum()] = montaLinha;
+    			
     			if(debugMode==2) {
     				System.out.println("]");
     			}
-		  }
+    		}
 		}
     	
     	System.out.println("Leitura finalizada com sucesso.");
+		return rows;
 	}
 	
 	public int getBufferSize() {

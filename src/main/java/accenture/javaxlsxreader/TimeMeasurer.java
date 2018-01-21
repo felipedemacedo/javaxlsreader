@@ -23,8 +23,13 @@ public class TimeMeasurer {
 		System.out.println("ELAPSED TIME: " + getElapsedTimeInSeconds() + " s");  
 	}
 	
+	public void stop(boolean debug) {
+		setEndTime(getTimeNow());
+		setElapsedTime(getEndTime() - getStartTime());
+	}
+	
 	public void restart() {
-		stop();
+		stop(false);
 		System.out.println("ELAPSED TIME: " + getElapsedTimeInSeconds() + " s");  
 		start();
 	}

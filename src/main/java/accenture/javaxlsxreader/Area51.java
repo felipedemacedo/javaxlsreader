@@ -1,12 +1,14 @@
 package accenture.javaxlsxreader;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Area51 {
 
 	public static void main(String[] args) {
         
-        LargeExcelXLSXReader reader = new LargeExcelXLSXReader("C:\\testeXLX\\Carga 210_RI.xlsx");
+        LargeExcelXLSXReader reader = new LargeExcelXLSXReader("C:/testeXLX/Test.xlsx");
         
         try {
         	TimeMeasurer cron = new TimeMeasurer(); //start timer
@@ -15,9 +17,15 @@ public class Area51 {
         	
 			cron.restart(); //check time
 			
-        	reader.iterate(0); 
+			String[] lines = reader.iterate(1); 
 			
-			cron.stop(); //check time
+			cron.restart(); //check time
+			
+			//for (String line : lines) {
+			//	System.out.println(line);
+			//}
+			
+			cron.stop();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
