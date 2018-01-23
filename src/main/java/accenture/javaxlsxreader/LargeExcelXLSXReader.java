@@ -25,6 +25,7 @@ public class LargeExcelXLSXReader {
 	private File inputFile = null;
 	private Workbook workbook = null;
 	private InputStream is = null; // InputStream or File for XLSX file (required)
+	private ArrayList<String[]> arrayInfo = new ArrayList<String[]>();
 	
 	//private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(LargeExcelXLSXReader.class.getName());
 	
@@ -75,31 +76,26 @@ public class LargeExcelXLSXReader {
 	 * @param debugMode
 	 * @return
 	 */
-	public String[] iterate(int debugMode) {
+	public List<String[]> iterate(int debugMode) {
 		
 		if(getWorkbook() == null)
 			return null;
 		    	
-		int linha = 1;
+		int linha = 1;	//debug
 		int planilha = 1;	//capturar apenas a primeira planilha
-		String[] rows = null;
 		
 		if(debugMode!=0) {
 			System.out.println("Iniciando leitura do arquivo ...");			
 		}
 		
     	for (Sheet sheet : getWorkbook()){
-   			if(planilha>1) {
+   			if(planilha>1) { // capturar apenas a primeira planilha
 				continue;
 			}
-			
-			planilha++;
     		
     		if(debugMode==2) {
     			System.out.println(sheet.getSheetName());
-    		}    		
-    		
-    		rows = new String[sheet.getLastRowNum()+1];
+    		}
     		
     		for (Row r : sheet) {
  
@@ -107,26 +103,29 @@ public class LargeExcelXLSXReader {
     				System.out.print("linha: " + (linha++) + " [");    				
     			}
     			
-    			String montaLinha = "";
-    			
+    			String[] row = new String[r.getLastCellNum()];
+    			int cellNum = 0;
     			for (Cell c : r) {
     				if(debugMode==2) {
-    					System.out.print(c.getStringCellValue());
+    					System.out.print(c.getStringCellValue() + ";");
     				}
     				
-    				montaLinha += c.getStringCellValue();
+    				row[cellNum] = c.getStringCellValue();
+    				cellNum++;
     			}
     			
-    			rows[r.getRowNum()] = montaLinha;
+    			arrayInfo.add(row);
     			
     			if(debugMode==2) {
     				System.out.println("]");
     			}
     		}
+    		
+    		planilha++;
 		}
     	
     	System.out.println("Leitura finalizada com sucesso.");
-		return rows;
+		return arrayInfo;
 	}
 	
 	public int getBufferSize() {

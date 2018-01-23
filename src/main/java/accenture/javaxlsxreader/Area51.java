@@ -17,7 +17,7 @@ public class Area51 {
         	
 			cron.restart(); //check time
 			
-			String[] lines = reader.iterate(1); 
+			List<String[]> lines = reader.iterate(1); 
 			
 			cron.restart(); //check time
 			
